@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Producto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <h2>Registro de Producto</h2>
+    <main>
+        <form method="POST">
+            <label>Nombre del Material:</label> 
+            <input type="text" name="nombre" required><br>
+
+            <label>Código de Barras (ID):</label> 
+            <input type="text" name="codigo_barras" required><br>
+
+            <label>Tipo de Material:</label> 
+            <select name="tipo">
+                <option value="insumo">Insumo</option>
+                <option value="herramienta">Herramienta</option>
+            </select><br>
+
+            <label>Estado del Material:</label> 
+            <select name="estado">
+                <option value="disponible">Disponible</option>
+                <option value="en uso">En Uso</option>
+                <option value="mantenimiento">En Mantenimiento</option>
+                <option value="dañado">Dañado</option>
+                <option value="reparacion">En Reparación</option>
+                <option value="fuera de stock">Fuera de Stock</option>
+            </select><br>
+
+            <label>Contacto de quien lo retiró:</label> 
+            <input type="text" name="contacto"><br>
+
+            <label>Fecha y Hora:</label> 
+            <input type="datetime-local" name="fecha_hora" required><br>
+
+            <button type="submit">Registrar Material</button>
+        </form>
+    </main>
+</body>
+</html>

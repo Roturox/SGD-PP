@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estadísticas de Inventario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'header.html' %}
+        <h2>Estadísticas del Inventario</h2>
+
+
+    <main>
+        <h2>Materiales más utilizados</h2>
+        <table>
+            <tr>
+                <th>Material</th>
+                <th>Veces retirado</th>
+            </tr>
+            {% for dato in estadisticas %}
+            <tr>
+                <td>{{ dato[0] }}</td>
+                <td>{{ dato[1] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Depósito</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- Inico del Header -->
+    {% include 'header.html' %}
+    <!-- Fin del Header -->
+
+
+    <!-- Sección Principal -->ñ
+    <main>
+        <section class="stock">
+            <h2>Stock Crítico</h2>
+            <table>
+                <tr>
+                    <th>Material</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                </tr>
+                {% for producto in stock_critico %}
+                <tr>
+                    <td>{{ producto[1] }}</td> <!-- Nombre -->
+                    <td>{{ producto[2] }}</td> <!-- Tipo -->
+                    <td>{{ producto[3] }}</td> <!-- Cantidad -->
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
+
+        <section class="prestamos">
+            <h2>Préstamos</h2>
+            <table>
+                <tr>
+                    <th>Material</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Fecha</th>
+                </tr>
+                {% for prestamo in prestamos %}
+                <tr>
+                    <td>{{ prestamo[1] }}</td> <!-- Material -->
+                    <td>{{ prestamo[2] }}</td> <!-- Tipo -->
+                    <td>{{ prestamo[3] }}</td> <!-- Cantidad -->
+                    <td>{{ prestamo[4] }}</td> <!-- Fecha -->
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
+    </main>
+</body>
+</html>

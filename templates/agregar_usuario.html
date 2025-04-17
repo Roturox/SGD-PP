@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Agregar Usuario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'header.html' %}
+    <h2>Registro de Usuario</h2>
+<main>
+    <form method="POST">
+        <label>Nombre:</label> <input type="text" name="nombre" required><br>
+        <label>Apellido:</label> <input type="text" name="apellido" required><br>
+        <label>DNI:</label> <input type="text" name="dni" required><br>
+        <label>Rol:</label>
+        <select name="rol">
+            <option value="rectora">Rectora</option>
+            <option value="administrador">Administrador</option>
+        </select><br>
+        <button type="submit">Registrar</button>
+    </form>
+    </main>
+</body>
+</html>

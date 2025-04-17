@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Retirar Material</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    {% include 'header.html' %}
+        <h2>Retirar Material</h2>
+
+
+
+    <main>
+        <h2>Registrar Retiro</h2>
+        <form method="POST">
+            <label>Material:</label> <input type="text" name="material" required><br>
+            <label>Cantidad:</label> <input type="number" name="cantidad" required><br>
+            <label>Responsable:</label> <input type="text" name="responsable" required><br>
+            <button type="submit">Confirmar Retiro</button>
+        </form>
+    </main>
+</body>
+</html>
