@@ -4,17 +4,22 @@ import sqlite3
 conn = sqlite3.connect("inventario_colegio.db")
 cursor = conn.cursor()
 
-# Crear la tabla de Usuarios primero
+# Crear la tabla de Usuarios si no existe
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS Usuarios (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
     apellido TEXT NOT NULL,
     dni TEXT UNIQUE NOT NULL,
-    rol TEXT NOT NULL CHECK(rol IN ('rectora', 'administrador')),
-    contraseña TEXT NOT NULL
+    rol TEXT NOT NULL CHECK(rol IN ('rectora', 'administrador'))
 )
 """)
+
+# 📌 Agregar la columna `contraseña` si no existe
+try:
+    cursor.execute("ALTER TABLE Usuarios ADD COLUMN contraseña TEXT NOT NULL DEFAULT 'temporal123';")
+except sqlite3.OperationalError:
+    print("La columna 'contraseña' ya existe en la tabla Usuarios.")
 
 # Crear la tabla de Inventario
 cursor.execute("""
@@ -43,4 +48,4 @@ CREATE TABLE IF NOT EXISTS Movimientos (
 conn.commit()
 conn.close()
 
-print("✅ Base de datos creada exitosamente.")
+print("✅ Base de datos actualizada exitosamente.")

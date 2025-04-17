@@ -44,19 +44,40 @@ def login():
 
     if request.method == "POST":
         dni = request.form["dni"]
-        contraseña = request.form["contraseña"]
+        contraseña_ingresada = request.form["contraseña"]
 
         cursor.execute("SELECT id, rol, contraseña FROM Usuarios WHERE dni = ?", (dni,))
         usuario = cursor.fetchone()
 
-        if usuario and contraseña == usuario[2]:  # ⚠️ Sustituir por hashed passwords
+        if usuario and check_password_hash(usuario[2], contraseña_ingresada):  # 🔒 Comparar contraseña cifrada
             session["user_id"] = usuario[0]
             session["rol"] = usuario[1]
+            conn.close()
             return redirect("/dashboard")
-        return "Credenciales incorrectas", 401
 
-    conn.close()
+        conn.close()
+        return "❌ Credenciales incorrectas", 401  # 🔴 Bloquear acceso con datos incorrectos
+
     return render_template("login.html")
+# Fin de Login
+
+@app.route('/resetear_contraseña', methods=["POST"])
+@requiere_rol("rectora")  # 🔒 Solo la rectora puede hacerlo
+def resetear_contraseña():
+    conn = conectar_bd()
+    cursor = conn.cursor()
+
+    dni = request.form["dni"]
+    nueva_contraseña = generate_password_hash("temporal123")  # 🔐 Nueva contraseña temporal
+
+    cursor.execute("UPDATE Usuarios SET contraseña = ? WHERE dni = ?", (nueva_contraseña, dni))
+    conn.commit()
+    conn.close()
+
+    return redirect("/usuarios")  # Redirigir de nuevo a la lista de usuarios
+
+
+
 
 # 🚪 Logout
 @app.route('/logout')
@@ -106,6 +127,8 @@ def mostrar_inventario():
 
 
 #Inicio de Agregar Usuario--
+from werkzeug.security import generate_password_hash, check_password_hash
+
 @app.route('/agregar_usuario', methods=["GET", "POST"])
 @requiere_rol("rectora")
 def agregar_usuario():
@@ -117,7 +140,7 @@ def agregar_usuario():
         apellido = request.form["apellido"]
         dni = request.form["dni"]
         rol = request.form["rol"]
-        contraseña = generate_password_hash(request.form["contraseña"])
+        contraseña = generate_password_hash(request.form["contraseña"])  # 🔐 Cifrar contraseña
 
         cursor.execute("INSERT INTO Usuarios (nombre, apellido, dni, rol, contraseña) VALUES (?, ?, ?, ?, ?)",
                        (nombre, apellido, dni, rol, contraseña))
@@ -134,25 +157,22 @@ def agregar_usuario():
 #Inicio de Depositar--
 @app.route('/depositar', methods=["GET", "POST"])
 def depositar():
+    conn = conectar_bd()  # 🛠️ Conectar a la base de datos
+    cursor = conn.cursor()  # 🛠️ Definir el cursor para ejecutar SQL
 
     if request.method == "POST":
         nombre = request.form["nombre"]
         codigo_barras = request.form["codigo_barras"]
-        tipo = request.form["tipo"]
-        estado = request.form["estado"]
-        contacto = request.form["contacto"]
-        fecha_hora = request.form["fecha_hora"]
 
-        cursor.execute("INSERT INTO Inventario (nombre, codigo_barras, cantidad, ubicacion) VALUES (?, ?, 1, 'Depósito')")
-        cursor.execute("INSERT INTO Movimientos (usuario, codigo_barras, accion, fecha) VALUES (?, ?, 'ingreso', ?)",
-                       (contacto, codigo_barras, fecha_hora))
+        cursor.execute("INSERT INTO Inventario (nombre, codigo_barras, cantidad, ubicacion) VALUES (?, ?, 1, 'Depósito')", (nombre, codigo_barras))
+        
+        conn.commit()  # 🛠️ Guardar los cambios en la base de datos
+        conn.close()  # 🛠️ Cerrar la conexión
 
-        conn.commit()
-        conn.close()
+        return redirect("/dashboard")  # 🔄 Redirigir después del registro
 
-        return redirect("/dashboard")
+    return render_template("depositar.html")  # Mostrar el formulario
 
-    return render_template("depositar.html")
 #Fin de Depositar--
 
 
@@ -179,8 +199,44 @@ def prestamos():
 
 #Inicio de Retirar--
 @app.route('/retirar', methods=["GET", "POST"])
+@requiere_login
 def retirar():
-    return render_template("retirar.html")
+    conn = conectar_bd()
+    cursor = conn.cursor()
+
+    # 📌 Obtener materiales del inventario
+    cursor.execute("SELECT nombre, cantidad FROM Inventario")
+    inventario = cursor.fetchall()
+
+    if request.method == "POST":
+        material = request.form["material"]
+        cantidad = int(request.form["cantidad"])
+
+        # 📌 Verificar si el material tiene stock suficiente
+        cursor.execute("SELECT cantidad FROM Inventario WHERE nombre = ?", (material,))
+        stock = cursor.fetchone()
+
+        if not stock:
+            conn.close()
+            return "❌ Error: Material no encontrado en el inventario.", 400
+
+        if stock[0] < cantidad:
+            conn.close()
+            return "⚠️ Error: No hay suficiente stock disponible.", 400
+
+        # ✅ Actualizar el inventario tras el retiro
+        cursor.execute("UPDATE Inventario SET cantidad = cantidad - ? WHERE nombre = ?", (cantidad, material))
+
+        # 📌 Registrar el retiro en la tabla `Movimientos`
+        cursor.execute("INSERT INTO Movimientos (usuario, codigo_barras, accion, fecha) VALUES (?, ?, 'retiro', CURRENT_TIMESTAMP)",
+                       (session["user_id"], material))
+
+        conn.commit()
+        conn.close()
+        return redirect("/dashboard")  # 🔄 Redirigir después del retiro
+
+    conn.close()
+    return render_template("retirar.html", inventario=inventario)
 #Inicio de Retirar--
 
 

@@ -11,14 +11,31 @@
 
 
 
-    <main>
-        <h2>Registrar Retiro</h2>
-        <form method="POST">
-            <label>Material:</label> <input type="text" name="material" required><br>
-            <label>Cantidad:</label> <input type="number" name="cantidad" required><br>
-            <label>Responsable:</label> <input type="text" name="responsable" required><br>
-            <button type="submit">Confirmar Retiro</button>
-        </form>
-    </main>
+        <main>
+            <h2>Inventario Disponible</h2>
+            <table>
+                <tr>
+                    <th>Material</th>
+                    <th>Cantidad</th>
+                </tr>
+                {% for item in inventario %}
+                <tr>
+                    <td>{{ item[0] }}</td>  <!-- Nombre del material -->
+                    <td>{{ item[1] }}</td>  <!-- Cantidad disponible -->
+                </tr>
+                {% endfor %}
+            </table>
+    
+            <h2>Registrar Retiro</h2>
+            <form method="POST">
+                <label>Material:</label>
+                <input type="text" name="material" required><br>
+    
+                <label>Cantidad:</label>
+                <input type="number" name="cantidad" required><br>
+    
+                <button type="submit">Confirmar Retiro</button>
+            </form>
+        </main>
 </body>
 </html>
