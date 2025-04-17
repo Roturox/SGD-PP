@@ -16,12 +16,6 @@ Este proyecto es un sistema de gestión de inventario desarrollado con **Python,
 ✅ **Stock crítico** → Identificación de materiales con baja disponibilidad.  
 ✅ **Reportes y estadísticas** → Análisis del uso de los materiales en el depósito.  
 
-## 🔧 Instalación
-1️⃣ **Clonar el repositorio**  
-   ```sh
-   git clone https://github.com/tu_usuario/tu_repositorio.git
-   cd tu_repositorio
-
 2️⃣ Crear un entorno virtual y activarlo
 python -m venv venv
 source venv/bin/activate  # En Linux/Mac
@@ -68,3 +62,17 @@ git commit -m "Mejora en la gestión de usuarios"
 git push origin mi-mejora
 
 - Haz un Pull Request para revisión.
+
+
+📩 Contacto
+Si tienes dudas o sugerencias, puedes abrir un Issue en GitHub o contactar a los desarrolladores. ¡Toda ayuda es bienvenida! 😃🎉
+
+---
+
+### **✅ Últimos pasos**
+1️⃣ **Copia este contenido y guárdalo en tu archivo `README.md` dentro del repositorio.**  
+2️⃣ **Sube los cambios a GitHub:**  
+   ```sh
+   git add README.md
+   git commit -m "Agregado README.md"
+   git push origin main
