@@ -21,3 +21,50 @@ Este proyecto es un sistema de gestión de inventario desarrollado con **Python,
    ```sh
    git clone https://github.com/tu_usuario/tu_repositorio.git
    cd tu_repositorio
+
+2️⃣ Crear un entorno virtual y activarlo
+python -m venv venv
+source venv/bin/activate  # En Linux/Mac
+venv\Scripts\activate  # En Windows
+
+
+3️⃣ Instalar las dependencias
+pip install -r requirements.txt
+
+
+4️⃣ Ejecutar el archivo de configuración de la base de datos
+python setup_db.py
+
+
+5️⃣ Iniciar la aplicación
+python app.py
+
+
+6️⃣ Acceder a la aplicación desde el navegador
+Abre http://127.0.0.1:5000 para comenzar a usar el sistema.
+📂 Estructura del proyecto
+📂 PP-SGD_byRoturo
+ ├── app.py                  # Código principal de la aplicación Flask
+ ├── setup_db.py             # Script para configurar la base de datos
+ ├── inventario_colegio.db   # Base de datos SQLite
+ ├── requirements.txt        # Dependencias del proyecto
+ ├── templates               # Archivos HTML
+ │    ├── layout.html
+ │    ├── login.html
+ │    ├── dashboard.html
+ │    ├── usuarios.html
+ ├── static                  # Archivos CSS y JavaScript
+ │    ├── styles.css
+ ├── README.md               # Documentación del proyecto
+
+
+💡 Contribuir al proyecto
+Si deseas colaborar:
+- Haz un fork del repositorio.
+- Crea una nueva rama para tu mejora:git checkout -b mi-mejora
+
+- Haz tus cambios y súbelos:git add .
+git commit -m "Mejora en la gestión de usuarios"
+git push origin mi-mejora
+
+- Haz un Pull Request para revisión.
