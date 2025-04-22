@@ -249,13 +249,29 @@ def pedido():
 
 #Inicio de Estadisticas--
 @app.route('/estadisticas')
+@requiere_login  # 🔒 Solo usuarios autenticados pueden ver las estadísticas
 def estadisticas():
     conn = conectar_bd()
     cursor = conn.cursor()
-    cursor.execute("SELECT nombre, COUNT(*) FROM Inventario GROUP BY nombre ORDER BY COUNT(*) DESC")
-    estadisticas = cursor.fetchall()
+
+    # 📌 Stock crítico: materiales con menos de 5 unidades
+    cursor.execute("SELECT nombre, cantidad FROM Inventario WHERE cantidad < 5")
+    stock_critico = cursor.fetchall()
+
+    # 📌 Historial de movimientos
+    cursor.execute("SELECT usuario, codigo_barras, accion, fecha FROM Movimientos ORDER BY fecha DESC LIMIT 10")
+    movimientos = cursor.fetchall()
+
+    # 📌 Datos para el gráfico
+    cursor.execute("SELECT codigo_barras, COUNT(*) FROM Movimientos WHERE accion = 'retiro' GROUP BY codigo_barras")
+    datos_grafico = cursor.fetchall()
+    
+    etiquetas = [item[0] for item in datos_grafico]  # Nombres de materiales
+    datos = [item[1] for item in datos_grafico]  # Cantidad retirada
+
     conn.close()
-    return render_template("estadisticas.html", estadisticas=estadisticas)
+
+    return render_template("estadisticas.html", stock_critico=stock_critico, movimientos=movimientos, etiquetas=etiquetas, datos=datos)
 #Fin de Estadisticas--
 
 if __name__ == "__main__":

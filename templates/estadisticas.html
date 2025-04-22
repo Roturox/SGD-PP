@@ -10,20 +10,58 @@
         <h2>Estadísticas del Inventario</h2>
 
 
-    <main>
-        <h2>Materiales más utilizados</h2>
-        <table>
-            <tr>
-                <th>Material</th>
-                <th>Veces retirado</th>
-            </tr>
-            {% for dato in estadisticas %}
-            <tr>
-                <td>{{ dato[0] }}</td>
-                <td>{{ dato[1] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </main>
+        <main>
+            <h2>🔴 Stock Crítico</h2>
+            <table>
+                <tr>
+                    <th>Material</th>
+                    <th>Cantidad</th>
+                </tr>
+                {% for item in stock_critico %}
+                <tr>
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[1] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+    
+            <h2>📌 Historial de Movimientos</h2>
+            <table>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Material</th>
+                    <th>Acción</th>
+                    <th>Fecha</th>
+                </tr>
+                {% for mov in movimientos %}
+                <tr>
+                    <td>{{ mov[0] }}</td>
+                    <td>{{ mov[1] }}</td>
+                    <td>{{ mov[2] }}</td>
+                    <td>{{ mov[3] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+    
+            <h2>📈 Uso de Materiales</h2>
+            <canvas id="graficoUso"></canvas>  <!-- Área para gráfico -->
+    
+            <script>
+                var ctx = document.getElementById('graficoUso').getContext('2d');
+                var grafico = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ etiquetas | tojson }},
+                        datasets: [{
+                            label: 'Cantidad retirada',
+                            data: {{ datos | tojson }},
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    }
+                });
+            </script>
+        </main>    
 </body>
 </html>
