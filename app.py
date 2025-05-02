@@ -101,16 +101,48 @@ def dashboard():
 
 # 🧑‍🎓 Usuarios (Solo accesible por la rectora)
 @app.route('/usuarios')
-@requiere_rol("rectora")
-def listar_usuarios():
+def usuarios():
+    conn = conectar_bd()
+    cursor = conn.cursor()
+    cursor.execute("SELECT nombre, apellido, dni, rol, id FROM Usuarios")
+    usuarios = cursor.fetchall()
+    conn.close()
+    print(usuarios)  # 🛠️ Esto imprimirá los datos en la consola
+    return render_template("usuarios.html", usuarios=usuarios)
+
+
+    #Editar la informacion de los Usuarios
+from werkzeug.security import generate_password_hash
+
+@app.route('/editar_usuario', methods=["POST"])
+@requiere_rol("rectora")  # Solo la rectora puede editar usuarios
+def editar_usuario():
     conn = conectar_bd()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT nombre, apellido, dni, rol FROM Usuarios")
-    usuarios = cursor.fetchall()
+    id = request.form["id"]
+    nombre = request.form["nombre"]
+    apellido = request.form["apellido"]
+    dni = request.form["dni"]
+    rol = request.form["rol"]
+    nueva_contraseña = request.form["nueva_contraseña"]
 
+    # 📌 Actualizar datos básicos del usuario
+    cursor.execute("""
+        UPDATE Usuarios 
+        SET nombre = ?, apellido = ?, dni = ?, rol = ? 
+        WHERE id = ?
+    """, (nombre, apellido, dni, rol, id))
+
+    # 📌 Si se proporcionó una nueva contraseña, actualizarla cifrada
+    if nueva_contraseña:
+        contraseña_hash = generate_password_hash(nueva_contraseña)
+        cursor.execute("UPDATE Usuarios SET contraseña = ? WHERE id = ?", (contraseña_hash, id))
+
+    conn.commit()
     conn.close()
-    return render_template("usuarios.html", usuarios=usuarios)
+
+    return redirect("/usuarios")  # Redirige a la lista de usuarios
 
 
 
